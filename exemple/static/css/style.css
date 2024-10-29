@@ -1,0 +1,33 @@
+h2 {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+main {
+    margin: 1rem;
+}
+
+form {
+    margin-bottom: 1rem;
+}
+
+.refuslot-form {
+    width: 80%;
+    margin-bottom: 0.5rem;
+    background-color: #e2e2e2;
+    padding: 0.5rem;
+    border-radius: 0.625rem;
+}
+
+label {
+    display: flex;
+    align-items: center;
+}
+
+label > * + * {
+    margin-left: 0.5rem;
+}
+
+.new-candidate:hover {
+    cursor: pointer;
+    color: black;
+}

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main>
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+
+        <div>
+        {% for form in formset %}
+            <div class="refuslot-form">
+                <h2>Formulaire {{ forloop.counter0 }}</h2>
+                {% for hidden_field in form.hidden_fields %}
+                    {{ hidden_field }}
+                {% endfor %}
+                {% partial form-candidat-field %}
+            </div>
+        {% endfor %}
+        </div>
+
+        <button class="waves-effect waves-light btn" type="submit">Envoyer</button>
+    </form>
+        
+</main>
+{% endblock content %}
+
+{% block bottom_scripts %}
+<script>
+    document.addEventListener('htmx:afterSwap', () => {
+        M.AutoInit();
+
+        const modal = document.querySelector('#modal-nouveau-candidat');
+        if (modal) {
+            const modalInstance = M.Modal.init(modal);
+            // Ouvre la modale automatiquement au chargement de la page
+            modalInstance.open();
+        }
+    });
+</script>
+{% endblock bottom_scripts %}
+
+{# TEMPLATES PARTIELS #}
+
+{% partialdef form-nouveau-candidat %}
+<div id="modals">
+    <div id="modal-nouveau-candidat" class="modal">
+        <div class="modal-content">
+            <form hx-post="{% url 'creer_candidat' %}" hx-target="#modals" hx-swap="outerHTML">
+                {% csrf_token %}
+                {{ form.as_div }}
+                <button class="waves-effect waves-light btn" type="submit">Créer le nouveau candidat</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endpartialdef %}
+
+{# template partial pour le remplacement des champs candidats de chaque formulaire #}
+{% partialdef form-candidat-fields %}
+    {% for form in formset %}
+        {% partialdef form-candidat-field inline %}
+        <div id="form-candidat-field-{{ forloop.counter0 }}" hx-swap-oob="true">
+            <label for="{{ form.candidat.id_for_label }}" style="font-size: 1.25rem">
+                <div>{{ form.candidat.label }} </div>
+                <div class="new-candidate" hx-get="{% url 'creer_candidat' %}" hx-target="body" hx-swap="beforeend"><i class='bx bxs-plus-circle'></i></div>
+            </label>
+            {{ form.candidat }}
+        </div>
+        {% endpartialdef %}
+    {% endfor %}
+{% endpartialdef %}
